@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: onetimesecret
+    env: docker
+    repo: https://github.com/jgoldfed/onetimesecret.git
+    dockerfilePath: ./Dockerfile
+    dockerCommand: docker-entrypoint.sh
+    envVars:
+      - key: HOST
+        value: localhost:3000
+      - key: SSL
+        value: false
+      - key: COLONEL
+        value: jgoldfed@gmail.com
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: onetimesecret-redis
+          property: connectionString
+      - key: RACK_ENV
+        value: production
+    healthCheckPath: /
+    numInstances: 1
+    port: 3000
+
+  - type: redis
+    name: onetimesecret-redis
+    ipAllowList: [] # only allow internal connections
+    plan: free # or choose a plan that suits your needs
